@@ -326,6 +326,8 @@
 
     // helper function for _.addTime and _.subtractTime
     function addOrSubtractDurationFromMoment(mom, duration, isAdding) {
+        mom = mom.clone();
+
         var ms = duration._milliseconds,
             d = duration._days,
             M = duration._months,
@@ -343,6 +345,8 @@
                 .month(mom.month() + M * isAdding)
                 .date(Math.min(currentDate, mom.daysInMonth()));
         }
+
+        return mom;
     }
 
     // check if is an array
@@ -1187,8 +1191,7 @@
             } else {
                 dur = moment.duration(input, val);
             }
-            addOrSubtractDurationFromMoment(this, dur, 1);
-            return this;
+            return addOrSubtractDurationFromMoment(this, dur, 1);
         },
 
         subtract : function (input, val) {
@@ -1199,8 +1202,7 @@
             } else {
                 dur = moment.duration(input, val);
             }
-            addOrSubtractDurationFromMoment(this, dur, -1);
-            return this;
+            return addOrSubtractDurationFromMoment(this, dur, -1);
         },
 
         diff : function (input, units, asFloat) {
@@ -1282,8 +1284,9 @@
                         return this;
                     }
                 }
-                this._d['set' + utc + 'Month'](input);
-                return this;
+                var mom = this.clone();
+                mom._d['set' + utc + 'Month'](input);
+                return mom;
             } else {
                 return this._d['get' + utc + 'Month']();
             }
@@ -1394,8 +1397,9 @@
             if (key === undefined) {
                 return this._lang;
             } else {
-                this._lang = getLangDefinition(key);
-                return this;
+                var mom = this.clone();
+                mom._lang = getLangDefinition(key);
+                return mom;
             }
         }
     };
@@ -1405,8 +1409,9 @@
         moment.fn[name] = moment.fn[name + 's'] = function (input) {
             var utc = this._isUTC ? 'UTC' : '';
             if (input != null) {
-                this._d['set' + utc + key](input);
-                return this;
+                var mom = this.clone();
+                mom._d['set' + utc + key](input);
+                return mom;
             } else {
                 return this._d['get' + utc + key]();
             }
