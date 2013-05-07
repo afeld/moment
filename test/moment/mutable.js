@@ -1,28 +1,30 @@
-var moment = require("../../moment");
+var moment = require("../../moment"),
+    fixedMoment = require("../../fixed_moment");
+
+var mutableMethods = {
+    'year':          function (m){ return m.year(2011); },
+    'month':         function (m){ return m.month(1); },
+    'date':          function (m){ return m.date(9); },
+    'hours':         function (m){ return m.hours(7); },
+    'minutes':       function (m){ return m.minutes(33); },
+    'seconds':       function (m){ return m.seconds(44); },
+    'milliseconds':  function (m){ return m.milliseconds(55); },
+    'day':           function (m){ return m.day(2); },
+    'startOf':       function (m){ return m.startOf('week'); },
+    'endOf':         function (m){ return m.endOf('week'); },
+    'add':           function (m){ return m.add('days', 1); },
+    'subtract':      function (m){ return m.subtract('years', 2); },
+    'local':         function (m){ return m.local(); },
+    'utc':           function (m){ return m.utc(); }
+};
 
 exports.mutable = {
-    "manipulation methods" : function (test) {
 
-        var mutableMethods = {
-            'year':          function (m){ return m.year(2011); },
-            'month':         function (m){ return m.month(1); },
-            'date':          function (m){ return m.date(9); },
-            'hours':         function (m){ return m.hours(7); },
-            'minutes':       function (m){ return m.minutes(33); },
-            'seconds':       function (m){ return m.seconds(44); },
-            'milliseconds':  function (m){ return m.milliseconds(55); },
-            'day':           function (m){ return m.day(2); },
-            'startOf':       function (m){ return m.startOf('week') },
-            'endOf':         function (m){ return m.endOf('week') },
-            'add':           function (m){ return m.add('days', 1) },
-            'subtract':      function (m){ return m.subtract('years', 2) },
-            'local':         function (m){ return m.local() },
-            'utc':           function (m){ return m.utc() }
-        };
+    "manipulation methods" : function (test) {
 
         test.expect(14);
 
-        for (method in mutableMethods) {
+        for (var method in mutableMethods) {
             if (mutableMethods.hasOwnProperty(method)) {
                 var d = moment();
                 var d2 = mutableMethods[method](d);
@@ -36,12 +38,12 @@ exports.mutable = {
     "non mutable methods" : function (test) {
 
         var nonMutableMethods = {
-            'clone':       function (m){ return m.clone() }
+            'clone':       function (m){ return m.clone(); }
         };
 
         test.expect(1);
 
-        for (method in nonMutableMethods){
+        for (var method in nonMutableMethods){
             if (nonMutableMethods.hasOwnProperty(method)) {
                 var d = new Date();
                 var d2 = nonMutableMethods[method](moment(d)).toDate();
@@ -50,6 +52,23 @@ exports.mutable = {
         }
 
         test.done();
+    },
+
+    "fixedMoment" : function (test) {
+
+        test.expect(14);
+
+        for (var method in mutableMethods) {
+            if (mutableMethods.hasOwnProperty(method)) {
+                var d = fixedMoment();
+                var d2 = mutableMethods[method](d);
+                // test.notStrictEqual(d, d2, method + "() should not mutate the moment");
+                test.strictEqual(d, d2, method + "() should not mutate the moment");
+            }
+        }
+
+        test.done();
+
     }
 
 };
